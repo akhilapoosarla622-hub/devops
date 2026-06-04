@@ -1,22 +1,30 @@
 pipeline {
-
    agent any
-   triggers {
-      githubPush()
-   }
 
    stages {
 
-       stage('Build') {
-
+       stage('Build with Maven') {
            steps {
-
-               echo 'testing App'
-
+               echo 'Building Project...'
+               sh 'mvn package'
            }
-
        }
 
+       stage('Show Artifact') {
+           steps {
+               sh 'ls target'
+           }
+       }
    }
 
+   post {
+
+       success {
+           echo 'Build Successful - Sending Email'
+       }
+
+       failure {
+           echo 'Build Failed - Sending Email'
+       }
+   }
 }
