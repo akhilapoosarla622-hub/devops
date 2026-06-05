@@ -1,30 +1,77 @@
 pipeline {
+
    agent any
+
 
    stages {
 
-       stage('Build with Maven') {
+
+       stage('Clone Code') {
+
            steps {
-               echo 'Building Project...'
-               sh 'mvn package'
+
+               git 'https://github.com/akhilapoosarla622-hub/devops.git'
+
            }
+
        }
 
-       stage('Show Artifact') {
+
+       stage('Build') {
+
            steps {
-               sh 'ls target'
+
+               echo 'Building HTML project...'
+
            }
+
        }
+
+
+       stage('Test') {
+
+           steps {
+
+               echo 'Testing website files...'
+
+
+               sh '''
+
+               if [ -f index.html ]; then
+
+                   echo "index.html exists"
+
+               else
+
+                   echo "index.html missing"
+
+                   exit 1
+
+               fi
+
+               '''
+
+           }
+                }
+
+
+       stage('Deploy') {
+
+           steps {
+
+               echo 'Deploying website...'
+
+
+               sh '''
+
+               sudo cp -r * /var/www/html/
+
+               '''
+
+           }
+
+       }
+
    }
 
-   post {
-
-       success {
-           echo 'Build Successful - Sending Email'
-       }
-
-       failure {
-           echo 'Build Failed - Sending Email'
-       }
-   }
 }
